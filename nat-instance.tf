@@ -21,7 +21,7 @@ data "aws_ami" "amazon_linux_nat_instance" {
 
 module "ec2_nat_instance" {
   count                   = var.nat_type == "instance" ? 1 : 0
-  source                  = "git::https://github.com/TechHoldingLLC/terraform-aws-ec2.git?ref=v1.0.0"
+  source                  = "git::https://github.com/TechHoldingLLC/terraform-aws-ec2.git?ref=v1.0.1"
   name                    = "${var.name}-nat-instance"
   ami_id                  = var.nat_instance_ami_id == "" ? data.aws_ami.amazon_linux_nat_instance.id : var.nat_instance_ami_id
   instance_type           = var.nat_instance_type
