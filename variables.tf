@@ -10,7 +10,8 @@ variable "create_private_subnets" {
 
 variable "cidr_block" {
   description = "The CIDR block defining the private IP address space used"
-  type        = string
+  type        = map({})
+  default     = {}
 }
 
 variable "enable_flow_log" {
