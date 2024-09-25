@@ -31,7 +31,7 @@ module "ec2_nat_instance" {
   source_dest_check       = false
   key_name                = var.nat_instance_key_name
   disable_api_termination = false
-  ipv6_address_count      = 1
+  ipv6_address_count      = var.enable_ipv6 ? 1 : 0
 
   user_data = <<END
 #!/bin/bash
@@ -70,7 +70,7 @@ module "nat_instance_sg" {
       cidr_blocks = ["::/0"]
     }
   ]
-  ingress = length(var.nat_instance_sg_ingress) > 0 ? var.nat_instance_sg_ingress : [
+  ingress = length(var.nat_instance_sg_ingress) > 0 ? var.nat_instance_sg_ingress : var.enable_ipv6 ? [
     {
       protocol    = -1
       from_port   = 0
@@ -82,6 +82,13 @@ module "nat_instance_sg" {
       from_port   = 0
       to_port     = 0
       cidr_blocks = [aws_vpc.vpc.ipv6_cidr_block]
+    }
+  ] : [
+    {
+      protocol    = -1
+      from_port   = 0
+      to_port     = 0
+      cidr_blocks = [aws_vpc.vpc.cidr_block]
     }
   ]
   providers = {
