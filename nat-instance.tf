@@ -67,7 +67,7 @@ module "nat_instance_sg" {
       protocol    = -1
       from_port   = 0
       to_port     = 0
-      cidr_blocks = ["::/0"]
+      ipv6_cidr_blocks = ["::/0"]
     }
   ]
   ingress = length(var.nat_instance_sg_ingress) > 0 ? var.nat_instance_sg_ingress : var.enable_ipv6 ? [
