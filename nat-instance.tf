@@ -62,28 +62,9 @@ module "nat_instance_sg" {
       from_port   = 0
       to_port     = 0
       cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      protocol    = -1
-      from_port   = 0
-      to_port     = 0
-      ipv6_cidr_blocks = ["::/0"]
     }
   ]
-  ingress = length(var.nat_instance_sg_ingress) > 0 ? var.nat_instance_sg_ingress : var.enable_ipv6 ? [
-    {
-      protocol    = -1
-      from_port   = 0
-      to_port     = 0
-      cidr_blocks = [aws_vpc.vpc.cidr_block]
-    },
-    {
-      protocol    = -1
-      from_port   = 0
-      to_port     = 0
-      cidr_blocks = [aws_vpc.vpc.ipv6_cidr_block]
-    }
-  ] : [
+  ingress = length(var.nat_instance_sg_ingress) > 0 ? var.nat_instance_sg_ingress : [
     {
       protocol    = -1
       from_port   = 0
