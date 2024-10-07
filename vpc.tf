@@ -26,6 +26,9 @@ resource "aws_subnet" "public_subnet" {
   cidr_block      = cidrsubnet(var.cidr_block, var.subnet_mask_bits, count.index) ## public subnets from 0 to 99
   ipv6_cidr_block = var.enable_ipv6 ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, var.subnet_mask_bits, count.index) : null
 
+  enable_resource_name_dns_a_record_on_launch    = true
+  enable_resource_name_dns_aaaa_record_on_launch = true
+
   availability_zone       = element(data.aws_availability_zones.available.names, count.index)
   enable_dns64            = var.enable_ipv6
   map_public_ip_on_launch = true
@@ -40,6 +43,9 @@ resource "aws_subnet" "private_subnet" {
 
   cidr_block      = cidrsubnet(var.cidr_block, var.subnet_mask_bits, count.index + 100) ## private subnets start from 100
   ipv6_cidr_block = var.enable_ipv6 ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, var.subnet_mask_bits, count.index + 100) : null
+
+  enable_resource_name_dns_a_record_on_launch    = true
+  enable_resource_name_dns_aaaa_record_on_launch = true
 
   availability_zone       = element(data.aws_availability_zones.available.names, count.index)
   enable_dns64            = var.enable_ipv6
