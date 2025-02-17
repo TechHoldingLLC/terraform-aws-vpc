@@ -34,42 +34,46 @@ output "nat_gateway_id" {
   value = var.nat_type == "gateway" ? aws_nat_gateway.ngw.*.id : null
 }
 
+output "nat_gateway_private_ip" {
+  value = var.nat_type == "gateway" ? aws_nat_gateway.ngw.*.private_ip : null
+}
+
 output "public_route_table_ids" {
   value = aws_route_table.public_route_table.*.id
 }
 
-output "public_subnet_ids" {
-  value = aws_subnet.public_subnet.*.id
+output "default_public_subnet_ids" {
+  value = module.default_subnets.public_subnet_ids
 }
 
-output "public_subnet_availability_zones" {
-  value = aws_subnet.public_subnet.*.availability_zone
+output "default_public_subnet_availability_zones" {
+  value = module.default_subnets.public_subnet_availability_zones
 }
 
-output "public_subnet_cidrs" {
-  value = aws_subnet.public_subnet.*.cidr_block
+output "default_public_subnet_cidr_blocks" {
+  value = module.default_subnets.public_subnet_cidr_blocks
 }
 
-output "public_subnet_ipv6_cidrs" {
-  value = var.enable_ipv6 ? aws_subnet.public_subnet.*.ipv6_cidr_block : null
+output "default_public_subnet_ipv6_cidr_blocks" {
+  value = var.enable_ipv6 ? module.default_subnets.public_subnet_ipv6_cidr_blocks : null
 }
 
-output "private_subnet_ids" {
-  value = var.create_private_subnets ? aws_subnet.private_subnet.*.id : null
+output "default_private_subnet_ids" {
+  value = var.create_private_subnets ? module.default_subnets.private_subnet_ids : null
 }
 
 output "private_route_table_ids" {
   value = aws_route_table.private_route_table.*.id
 }
 
-output "private_subnets_availability_zone" {
-  value = var.create_private_subnets ? aws_subnet.private_subnet.*.availability_zone : null
+output "default_private_subnets_availability_zone" {
+  value = var.create_private_subnets ? module.default_subnets.private_subnet_availability_zones : null
 }
 
-output "private_subnets_cidr" {
-  value = var.create_private_subnets ? aws_subnet.private_subnet.*.cidr_block : null
+output "default_private_subnets_cidr" {
+  value = var.create_private_subnets ? module.default_subnets.private_subnet_cidr_blocks : null
 }
 
-output "private_subnets_ipv6_cidrs" {
-  value = var.enable_ipv6 && var.create_private_subnets ? aws_subnet.private_subnet.*.ipv6_cidr_block : null
+output "default_private_subnets_ipv6_cidrs" {
+  value = var.enable_ipv6 && var.create_private_subnets ? module.default_subnets.private_subnet_ipv6_cidr_blocks : null
 }
