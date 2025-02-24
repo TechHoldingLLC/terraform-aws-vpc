@@ -25,7 +25,7 @@ module "ec2_nat_instance" {
   name                    = "${var.name}-nat-instance"
   ami_id                  = var.nat_instance_ami_id == "" ? data.aws_ami.amazon_linux_nat_instance.id : var.nat_instance_ami_id
   instance_type           = var.nat_instance_type
-  subnet                  = element(aws_subnet.public_subnet.*.id, 1)
+  subnet                  = element(module.default_subnets.public_subnet_ids, 1)
   vpc_id                  = aws_vpc.vpc.id
   eip                     = true
   source_dest_check       = false
