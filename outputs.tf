@@ -10,6 +10,10 @@ output "cidr_block" {
   value = aws_vpc.vpc.cidr_block
 }
 
+output "ipv6_cidr_block" {
+  value = var.enable_ipv6 ? aws_vpc.vpc.ipv6_cidr_block : null
+}
+
 output "id" {
   value = aws_vpc.vpc.id
 }
@@ -30,24 +34,32 @@ output "nat_gateway_id" {
   value = var.nat_type == "gateway" ? aws_nat_gateway.ngw.*.id : null
 }
 
+output "nat_gateway_private_ip" {
+  value = var.nat_type == "gateway" ? aws_nat_gateway.ngw.*.private_ip : null
+}
+
 output "public_route_table_ids" {
   value = aws_route_table.public_route_table.*.id
 }
 
 output "public_subnet_ids" {
-  value = aws_subnet.public_subnet.*.id
+  value = module.default_subnets.public_subnet_ids
 }
 
 output "public_subnet_availability_zones" {
-  value = aws_subnet.public_subnet.*.availability_zone
+  value = module.default_subnets.public_subnet_availability_zones
 }
 
-output "public_subnet_cidrs" {
-  value = aws_subnet.public_subnet.*.cidr_block
+output "public_subnet_cidr_blocks" {
+  value = module.default_subnets.public_subnet_cidr_blocks
+}
+
+output "public_subnet_ipv6_cidr_blocks" {
+  value = var.enable_ipv6 ? module.default_subnets.public_subnet_ipv6_cidr_blocks : null
 }
 
 output "private_subnet_ids" {
-  value = var.create_private_subnets ? aws_subnet.private_subnet.*.id : null
+  value = var.create_private_subnets ? module.default_subnets.private_subnet_ids : null
 }
 
 output "private_route_table_ids" {
@@ -55,9 +67,13 @@ output "private_route_table_ids" {
 }
 
 output "private_subnets_availability_zone" {
-  value = var.create_private_subnets ? aws_subnet.private_subnet.*.availability_zone : null
+  value = var.create_private_subnets ? module.default_subnets.private_subnet_availability_zones : null
 }
 
 output "private_subnets_cidr" {
-  value = var.create_private_subnets ? aws_subnet.private_subnet.*.cidr_block : null
+  value = var.create_private_subnets ? module.default_subnets.private_subnet_cidr_blocks : null
+}
+
+output "private_subnets_ipv6_cidrs" {
+  value = var.enable_ipv6 && var.create_private_subnets ? module.default_subnets.private_subnet_ipv6_cidr_blocks : null
 }

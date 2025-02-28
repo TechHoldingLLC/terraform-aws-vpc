@@ -21,16 +21,17 @@ data "aws_ami" "amazon_linux_nat_instance" {
 
 module "ec2_nat_instance" {
   count                   = var.nat_type == "instance" ? 1 : 0
-  source                  = "git::https://github.com/TechHoldingLLC/terraform-aws-ec2.git?ref=v1.0.1"
+  source                  = "git::https://github.com/TechHoldingLLC/terraform-aws-ec2.git?ref=v1.0.2"
   name                    = "${var.name}-nat-instance"
   ami_id                  = var.nat_instance_ami_id == "" ? data.aws_ami.amazon_linux_nat_instance.id : var.nat_instance_ami_id
   instance_type           = var.nat_instance_type
-  subnet                  = element(aws_subnet.public_subnet.*.id, 1)
+  subnet                  = element(module.default_subnets.public_subnet_ids, 1)
   vpc_id                  = aws_vpc.vpc.id
   eip                     = true
   source_dest_check       = false
   key_name                = var.nat_instance_key_name
   disable_api_termination = false
+  ipv6_address_count      = var.enable_ipv6 ? 1 : 0
 
   user_data = <<END
 #!/bin/bash

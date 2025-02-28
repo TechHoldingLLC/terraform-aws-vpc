@@ -19,6 +19,12 @@ variable "enable_flow_log" {
   default     = false
 }
 
+variable "enable_ipv6" {
+  description = "Flag to enable/disable IPv6 configuration"
+  type        = bool
+  default     = false
+}
+
 variable "flow_log_retention_in_days" {
   description = "Flow logs retention in days"
   type        = number
