@@ -14,7 +14,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_ec2_nat_instance"></a> [ec2\_nat\_instance](#module\_ec2\_nat\_instance) | git::https://github.com/TechHoldingLLC/terraform-aws-ec2.git | v1.0.0 |
+| <a name="module_ec2_nat_instance"></a> [ec2\_nat\_instance](#module\_ec2\_nat\_instance) | git::https://github.com/TechHoldingLLC/terraform-aws-ec2.git | v1.0.1 |
 | <a name="module_nat_instance_sg"></a> [nat\_instance\_sg](#module\_nat\_instance\_sg) | git::https://github.com/TechHoldingLLC/terraform-aws-security-group.git | v0.0.1 |
 
 ## Resources
@@ -67,6 +67,9 @@
 |------|-------------|
 | <a name="output_availability_zones"></a> [availability\_zones](#output\_availability\_zones) | n/a |
 | <a name="output_cidr_block"></a> [cidr\_block](#output\_cidr\_block) | n/a |
+| <a name="output_default_nacl_id"></a> [default\_nacl\_id](#output\_default\_nacl\_id) | n/a |
+| <a name="output_default_route_table_id"></a> [default\_route\_table\_id](#output\_default\_route\_table\_id) | n/a |
+| <a name="output_defaut_security_group_id"></a> [defaut\_security\_group\_id](#output\_defaut\_security\_group\_id) | n/a |
 | <a name="output_id"></a> [id](#output\_id) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_nat_gateway_id"></a> [nat\_gateway\_id](#output\_nat\_gateway\_id) | n/a |
