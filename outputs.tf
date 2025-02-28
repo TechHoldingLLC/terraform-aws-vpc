@@ -6,6 +6,18 @@ output "availability_zones" {
   value = slice(data.aws_availability_zones.available.names, 0, var.number_of_aws_az_use)
 }
 
+output "default_nacl_id" {
+  value = aws_vpc.vpc.default_network_acl_id
+}
+
+output "default_route_table_id" {
+  value = aws_vpc.vpc.default_route_table_id
+}
+
+output "default_security_group_id" {
+  value = aws_vpc.vpc.default_security_group_id
+}
+
 output "cidr_block" {
   value = aws_vpc.vpc.cidr_block
 }
