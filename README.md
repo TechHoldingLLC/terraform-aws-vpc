@@ -14,7 +14,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_ec2_nat_instance"></a> [ec2\_nat\_instance](#module\_ec2\_nat\_instance) | git::https://github.com/TechHoldingLLC/terraform-aws-ec2.git | v1.0.1 |
+| <a name="module_ec2_nat_instance"></a> [ec2\_nat\_instance](#module\_ec2\_nat\_instance) | git::https://github.com/TechHoldingLLC/terraform-aws-ec2.git | v1.0.3 |
 | <a name="module_nat_instance_sg"></a> [nat\_instance\_sg](#module\_nat\_instance\_sg) | git::https://github.com/TechHoldingLLC/terraform-aws-security-group.git | v0.0.1 |
 
 ## Resources
@@ -52,6 +52,7 @@
 | <a name="input_flow_log_retention_in_days"></a> [flow\_log\_retention\_in\_days](#input\_flow\_log\_retention\_in\_days) | Flow logs retention in days | `number` | `0` | no |
 | <a name="input_name"></a> [name](#input\_name) | VPC name | `string` | n/a | yes |
 | <a name="input_nat_instance_ami_id"></a> [nat\_instance\_ami\_id](#input\_nat\_instance\_ami\_id) | NAT instance AMI id | `string` | `""` | no |
+| <a name="input_nat_instance_iam_instance_profile"></a> [nat\_instance\_iam\_instance\_profile](#input\_nat\_instance\_iam\_instance\_profile) | Name of the NAT instance's IAM instance profile | `string` | `null` | no |
 | <a name="input_nat_instance_key_name"></a> [nat\_instance\_key\_name](#input\_nat\_instance\_key\_name) | NAT instance key pair name | `string` | `""` | no |
 | <a name="input_nat_instance_sg_egress"></a> [nat\_instance\_sg\_egress](#input\_nat\_instance\_sg\_egress) | Egress for Nat instance Security Group | `list(any)` | `[]` | no |
 | <a name="input_nat_instance_sg_ingress"></a> [nat\_instance\_sg\_ingress](#input\_nat\_instance\_sg\_ingress) | Ingress for Nat instance Security Group | `list(any)` | `[]` | no |
@@ -69,7 +70,7 @@
 | <a name="output_cidr_block"></a> [cidr\_block](#output\_cidr\_block) | n/a |
 | <a name="output_default_nacl_id"></a> [default\_nacl\_id](#output\_default\_nacl\_id) | n/a |
 | <a name="output_default_route_table_id"></a> [default\_route\_table\_id](#output\_default\_route\_table\_id) | n/a |
-| <a name="output_defaut_security_group_id"></a> [defaut\_security\_group\_id](#output\_defaut\_security\_group\_id) | n/a |
+| <a name="output_default_security_group_id"></a> [default\_security\_group\_id](#output\_default\_security\_group\_id) | n/a |
 | <a name="output_id"></a> [id](#output\_id) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_nat_gateway_id"></a> [nat\_gateway\_id](#output\_nat\_gateway\_id) | n/a |
