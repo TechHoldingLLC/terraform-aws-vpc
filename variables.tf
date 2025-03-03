@@ -72,6 +72,12 @@ variable "nat_instance_sg_egress" {
   default     = []
 }
 
+variable "nat_instance_iam_instance_profile" {
+  description = "Name of the NAT instance's IAM instance profile"
+  type        = string
+  default     = null
+}
+
 variable "nat_type" {
   description = "NAT type i.e `instance` or `gateway`"
   type        = string
