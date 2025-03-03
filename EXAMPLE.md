@@ -41,6 +41,7 @@ module "vpc" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   ]
+  nat_instance_iam_instance_profile = aws_iam_instance_profile.ec2.name
   
   providers = {
     aws = aws
