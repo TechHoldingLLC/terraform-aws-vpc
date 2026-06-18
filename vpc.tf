@@ -3,9 +3,10 @@
 ################
 
 resource "aws_vpc" "vpc" {
-  cidr_block           = var.cidr_block
-  enable_dns_hostnames = true
-  enable_dns_support   = true
+  cidr_block                       = var.cidr_block
+  assign_generated_ipv6_cidr_block = true
+  enable_dns_hostnames             = true
+  enable_dns_support               = true
   tags = {
     Name = var.name
   }
@@ -19,11 +20,13 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_subnet" "public_subnet" {
-  count                   = var.number_of_aws_az_use
-  vpc_id                  = aws_vpc.vpc.id
-  cidr_block              = cidrsubnet(var.cidr_block, var.subnet_mask_bits, count.index) ## public subnets from 0 to 99
-  availability_zone       = element(data.aws_availability_zones.available.names, count.index)
-  map_public_ip_on_launch = true
+  count                           = var.number_of_aws_az_use
+  vpc_id                          = aws_vpc.vpc.id
+  cidr_block                      = cidrsubnet(var.cidr_block, var.subnet_mask_bits, count.index) ## public subnets from 0 to 99
+  ipv6_cidr_block                 = cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, count.index)
+  assign_ipv6_address_on_creation = true
+  availability_zone               = element(data.aws_availability_zones.available.names, count.index)
+  map_public_ip_on_launch         = true
   tags = {
     Name = "${var.name}-default-public-${element(data.aws_availability_zones.available.names, count.index)}"
   }
@@ -71,6 +74,12 @@ resource "aws_route" "igw_route" {
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.igw.id
   route_table_id         = aws_route_table.public_route_table.id
+}
+
+resource "aws_route" "igw_route_ipv6" {
+  destination_ipv6_cidr_block = "::/0"
+  gateway_id                  = aws_internet_gateway.igw.id
+  route_table_id              = aws_route_table.public_route_table.id
 }
 
 resource "aws_route_table_association" "public_route_table_assoc" {

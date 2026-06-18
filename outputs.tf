@@ -22,6 +22,10 @@ output "cidr_block" {
   value = aws_vpc.vpc.cidr_block
 }
 
+output "vpc_ipv6_cidr_block" {
+  value = aws_vpc.vpc.ipv6_cidr_block
+}
+
 output "id" {
   value = aws_vpc.vpc.id
 }
@@ -56,6 +60,10 @@ output "public_subnet_availability_zones" {
 
 output "public_subnet_cidrs" {
   value = aws_subnet.public_subnet.*.cidr_block
+}
+
+output "public_subnet_ipv6_cidr_blocks" {
+  value = aws_subnet.public_subnet.*.ipv6_cidr_block
 }
 
 output "private_subnet_ids" {
