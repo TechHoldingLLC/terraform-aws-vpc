@@ -33,13 +33,24 @@ resource "aws_subnet" "public_subnet" {
 }
 
 resource "aws_subnet" "private_subnet" {
-  count                   = var.create_private_subnets ? var.number_of_aws_az_use : 0
-  vpc_id                  = aws_vpc.vpc.id
-  cidr_block              = cidrsubnet(var.cidr_block, var.subnet_mask_bits, count.index + 100) ## private subnets start from 100
-  availability_zone       = element(data.aws_availability_zones.available.names, count.index)
-  map_public_ip_on_launch = false
+  count                           = var.create_private_subnets ? var.number_of_aws_az_use : 0
+  vpc_id                          = aws_vpc.vpc.id
+  cidr_block                      = cidrsubnet(var.cidr_block, var.subnet_mask_bits, count.index + 100) ## private subnets start from 100
+  ipv6_cidr_block                 = cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, count.index + 100)
+  assign_ipv6_address_on_creation = true
+  availability_zone               = element(data.aws_availability_zones.available.names, count.index)
+  map_public_ip_on_launch         = false
   tags = {
     Name = "${var.name}-default-private-${element(data.aws_availability_zones.available.names, count.index)}"
+  }
+}
+
+# Egress Only Internet Gateway used for private subnets to access the internet via IPv6
+resource "aws_egress_only_internet_gateway" "eigw" {
+  count  = var.create_private_subnets ? 1 : 0
+  vpc_id = aws_vpc.vpc.id
+  tags = {
+    Name = "${var.name}-eigw"
   }
 }
 
@@ -105,6 +116,13 @@ resource "aws_route" "ngw_route" {
   network_interface_id   = var.nat_type == "instance" ? module.ec2_nat_instance.0.network_interface_id : null
   nat_gateway_id         = var.nat_type == "gateway" ? element(aws_nat_gateway.ngw.*.id, count.index) : null
   route_table_id         = element(aws_route_table.private_route_table.*.id, count.index)
+}
+
+resource "aws_route" "eigw_route_ipv6" {
+  count                       = var.create_private_subnets ? var.number_of_aws_az_use : 0
+  destination_ipv6_cidr_block = "::/0"
+  egress_only_gateway_id      = aws_egress_only_internet_gateway.eigw[0].id
+  route_table_id              = element(aws_route_table.private_route_table.*.id, count.index)
 }
 
 resource "aws_route_table_association" "private_route_table_assoc" {

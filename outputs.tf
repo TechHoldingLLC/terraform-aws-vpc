@@ -81,3 +81,11 @@ output "private_subnets_availability_zone" {
 output "private_subnets_cidr" {
   value = var.create_private_subnets ? aws_subnet.private_subnet.*.cidr_block : null
 }
+
+output "private_subnet_ipv6_cidr_blocks" {
+  value = var.create_private_subnets ? aws_subnet.private_subnet.*.ipv6_cidr_block : null
+}
+
+output "egress_only_internet_gateway_id" {
+  value = var.create_private_subnets ? aws_egress_only_internet_gateway.eigw[0].id : null
+}
