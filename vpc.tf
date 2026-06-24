@@ -36,7 +36,7 @@ resource "aws_subnet" "private_subnet" {
   count                           = var.create_private_subnets ? var.number_of_aws_az_use : 0
   vpc_id                          = aws_vpc.vpc.id
   cidr_block                      = cidrsubnet(var.cidr_block, var.subnet_mask_bits, count.index + 100) ## private subnets start from 100
-  ipv6_cidr_block                 = cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, count.index + 100)
+  ipv6_cidr_block                 = cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, count.index + 100)  # cidrsubnet(prefix, newbits, netnum) so netnum convert a number into binary and then convert a binary into hex and used that hex as a subnet number
   assign_ipv6_address_on_creation = true
   availability_zone               = element(data.aws_availability_zones.available.names, count.index)
   map_public_ip_on_launch         = false
