@@ -73,3 +73,15 @@ output "private_subnets_availability_zone" {
 output "private_subnets_cidr" {
   value = var.create_private_subnets ? aws_subnet.private_subnet.*.cidr_block : null
 }
+
+output "gateway_endpoint_ids" {
+  value = { for service, endpoint in aws_vpc_endpoint.gateway : service => endpoint.id }
+}
+
+output "interface_endpoint_ids" {
+  value = { for service, endpoint in aws_vpc_endpoint.interface : service => endpoint.id }
+}
+
+output "interface_endpoint_security_group_id" {
+  value = one(module.interface_endpoint_sg.*.id)
+}
