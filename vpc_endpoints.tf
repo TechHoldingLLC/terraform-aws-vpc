@@ -18,7 +18,6 @@ resource "aws_vpc_endpoint" "gateway" {
 
   lifecycle {
     ## Without private route tables the endpoint is created but nothing routes to it.
-    ## Checked against the route tables themselves so this tracks their count expression.
     precondition {
       condition     = length(aws_route_table.private_route_table) > 0
       error_message = "gateway_endpoints needs private route tables to attach to. Set create_private_subnets = true, or set nat_type."
