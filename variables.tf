@@ -95,3 +95,9 @@ variable "assign_generated_ipv6_cidr_block" {
   type        = bool
   default     = true
 }
+
+variable "disable_subnet_ipv6" {
+  description = "Disable IPv6 on the default public/private subnets independently of assign_generated_ipv6_cidr_block, so subnet-level IPv6 CIDR blocks can be disassociated before disassociating the VPC's IPv6 CIDR block in a follow-up apply"
+  type        = bool
+  default     = false
+}
