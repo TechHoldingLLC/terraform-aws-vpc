@@ -20,6 +20,7 @@ resource "aws_internet_gateway" "igw" {
 }
 
 locals {
+  # subnet_ipv6_enabled is true if assign_generated_ipv6_cidr_block is true and disable_subnet_ipv6 is false
   subnet_ipv6_enabled = var.assign_generated_ipv6_cidr_block && !var.disable_subnet_ipv6
 }
 
@@ -51,7 +52,7 @@ resource "aws_subnet" "private_subnet" {
 
 # Egress Only Internet Gateway used for private subnets to access the internet via IPv6
 resource "aws_egress_only_internet_gateway" "eigw" {
-  count  = var.create_private_subnets && var.assign_generated_ipv6_cidr_block ? 1 : 0
+  count  = var.create_private_subnets && var.assign_generated_ipv6_cidr_block ? 1 : 0 # create only if private subnets are created and IPv6 is enabled
   vpc_id = aws_vpc.vpc.id
   tags = {
     Name = "${var.name}-eigw"
