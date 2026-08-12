@@ -4,7 +4,7 @@
 
 resource "aws_vpc" "vpc" {
   cidr_block                       = var.cidr_block
-  assign_generated_ipv6_cidr_block = true
+  assign_generated_ipv6_cidr_block = var.assign_generated_ipv6_cidr_block
   enable_dns_hostnames             = true
   enable_dns_support               = true
   tags = {
@@ -23,8 +23,8 @@ resource "aws_subnet" "public_subnet" {
   count                           = var.number_of_aws_az_use
   vpc_id                          = aws_vpc.vpc.id
   cidr_block                      = cidrsubnet(var.cidr_block, var.subnet_mask_bits, count.index) ## public subnets from 0 to 99
-  ipv6_cidr_block                 = cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, count.index)
-  assign_ipv6_address_on_creation = true
+  ipv6_cidr_block                 = var.assign_generated_ipv6_cidr_block ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, count.index) : null
+  assign_ipv6_address_on_creation = var.assign_generated_ipv6_cidr_block
   availability_zone               = element(data.aws_availability_zones.available.names, count.index)
   map_public_ip_on_launch         = true
   tags = {
@@ -35,9 +35,9 @@ resource "aws_subnet" "public_subnet" {
 resource "aws_subnet" "private_subnet" {
   count                           = var.create_private_subnets ? var.number_of_aws_az_use : 0
   vpc_id                          = aws_vpc.vpc.id
-  cidr_block                      = cidrsubnet(var.cidr_block, var.subnet_mask_bits, count.index + 100) ## private subnets start from 100
-  ipv6_cidr_block                 = cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, count.index + 100)  # cidrsubnet(prefix, newbits, netnum) so netnum convert a number into binary and then convert a binary into hex and used that hex as a subnet number
-  assign_ipv6_address_on_creation = true
+  cidr_block                      = cidrsubnet(var.cidr_block, var.subnet_mask_bits, count.index + 100)                                         ## private subnets start from 100
+  ipv6_cidr_block                 = var.assign_generated_ipv6_cidr_block ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, count.index + 100) : null # cidrsubnet(prefix, newbits, netnum) so netnum convert a number into binary and then convert a binary into hex and used that hex as a subnet number
+  assign_ipv6_address_on_creation = var.assign_generated_ipv6_cidr_block
   availability_zone               = element(data.aws_availability_zones.available.names, count.index)
   map_public_ip_on_launch         = false
   tags = {
@@ -47,7 +47,7 @@ resource "aws_subnet" "private_subnet" {
 
 # Egress Only Internet Gateway used for private subnets to access the internet via IPv6
 resource "aws_egress_only_internet_gateway" "eigw" {
-  count  = var.create_private_subnets ? 1 : 0
+  count  = var.create_private_subnets && var.assign_generated_ipv6_cidr_block ? 1 : 0
   vpc_id = aws_vpc.vpc.id
   tags = {
     Name = "${var.name}-eigw"
@@ -88,6 +88,7 @@ resource "aws_route" "igw_route" {
 }
 
 resource "aws_route" "igw_route_ipv6" {
+  count                       = var.assign_generated_ipv6_cidr_block ? 1 : 0
   destination_ipv6_cidr_block = "::/0"
   gateway_id                  = aws_internet_gateway.igw.id
   route_table_id              = aws_route_table.public_route_table.id
@@ -119,7 +120,7 @@ resource "aws_route" "ngw_route" {
 }
 
 resource "aws_route" "eigw_route_ipv6" {
-  count                       = var.create_private_subnets ? var.number_of_aws_az_use : 0
+  count                       = var.create_private_subnets && var.assign_generated_ipv6_cidr_block ? var.number_of_aws_az_use : 0
   destination_ipv6_cidr_block = "::/0"
   egress_only_gateway_id      = aws_egress_only_internet_gateway.eigw[0].id
   route_table_id              = element(aws_route_table.private_route_table.*.id, count.index)
