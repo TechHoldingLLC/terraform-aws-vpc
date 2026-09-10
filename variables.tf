@@ -90,14 +90,8 @@ variable "subnet_mask_bits" {
   default     = 8
 }
 
-variable "assign_generated_ipv6_cidr_block" {
-  description = "Requests an Amazon-provided IPv6 CIDR block for the VPC. Set to false to disable IPv6"
-  type        = bool
-  default     = true
-}
-
-variable "disable_subnet_ipv6" {
-  description = "Flag to disable IPv6 for subnets. Set to true to disable IPv6 for subnets"
+variable "enable_private_subnet_ipv6" {
+  description = "Flag to enable IPv6 for private subnets. IPv6 is always enabled for the VPC and public subnets; private subnets get it only when this is set to true"
   type        = bool
   default     = false
 }

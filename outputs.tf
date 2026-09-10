@@ -87,5 +87,5 @@ output "private_subnet_ipv6_cidr_blocks" {
 }
 
 output "egress_only_internet_gateway_id" {
-  value = var.create_private_subnets && var.assign_generated_ipv6_cidr_block ? aws_egress_only_internet_gateway.eigw[0].id : null
+  value = var.create_private_subnets && var.enable_private_subnet_ipv6 ? aws_egress_only_internet_gateway.eigw[0].id : null
 }
