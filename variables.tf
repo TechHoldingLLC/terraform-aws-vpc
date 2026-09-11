@@ -89,3 +89,9 @@ variable "subnet_mask_bits" {
   type        = number
   default     = 8
 }
+
+variable "enable_private_subnet_ipv6" {
+  description = "Flag to enable IPv6 for private subnets. IPv6 is always enabled for the VPC and public subnets; private subnets get it only when this is set to true"
+  type        = bool
+  default     = false
+}

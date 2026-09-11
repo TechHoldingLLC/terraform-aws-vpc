@@ -22,6 +22,10 @@ output "cidr_block" {
   value = aws_vpc.vpc.cidr_block
 }
 
+output "vpc_ipv6_cidr_block" {
+  value = aws_vpc.vpc.ipv6_cidr_block
+}
+
 output "id" {
   value = aws_vpc.vpc.id
 }
@@ -58,6 +62,10 @@ output "public_subnet_cidrs" {
   value = aws_subnet.public_subnet.*.cidr_block
 }
 
+output "public_subnet_ipv6_cidr_blocks" {
+  value = aws_subnet.public_subnet.*.ipv6_cidr_block
+}
+
 output "private_subnet_ids" {
   value = var.create_private_subnets ? aws_subnet.private_subnet.*.id : null
 }
@@ -72,4 +80,12 @@ output "private_subnets_availability_zone" {
 
 output "private_subnets_cidr" {
   value = var.create_private_subnets ? aws_subnet.private_subnet.*.cidr_block : null
+}
+
+output "private_subnet_ipv6_cidr_blocks" {
+  value = var.create_private_subnets ? aws_subnet.private_subnet.*.ipv6_cidr_block : null
+}
+
+output "egress_only_internet_gateway_id" {
+  value = var.create_private_subnets && var.enable_private_subnet_ipv6 ? aws_egress_only_internet_gateway.eigw[0].id : null
 }

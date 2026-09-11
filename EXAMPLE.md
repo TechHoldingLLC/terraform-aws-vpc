@@ -1,6 +1,8 @@
 # VPC
 Below is an examples of calling this module.
 
+> **Networking note:** the VPC is provisioned as dual stack. AWS assigns a `/56` IPv6 CIDR to the VPC and each subnet (public and private) receives a `/64` carved from that range. The public route table carries both `0.0.0.0/0` and `::/0` default routes pointing to the Internet Gateway. Private route tables carry `0.0.0.0/0` pointing to the NAT Gateway and `::/0` pointing to an Egress-Only Internet Gateway, allowing outbound-only IPv6 traffic from private subnets.
+
 ## Create a Basic VPC with only Public Subnets
 ```
 module "vpc" {
@@ -83,4 +85,3 @@ module "vpc" {
   }
 }
 ```
-
