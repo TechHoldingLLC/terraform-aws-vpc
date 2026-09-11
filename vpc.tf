@@ -91,7 +91,7 @@ resource "aws_route_table" "private_route_table" {
 }
 
 resource "aws_route" "ngw_route" {
-  count                  = var.create_private_subnets || length(var.nat_type) > 0 ? var.number_of_aws_az_use : 0
+  count                  = length(var.nat_type) > 0 ? var.number_of_aws_az_use : 0
   destination_cidr_block = "0.0.0.0/0"
   network_interface_id   = var.nat_type == "instance" ? module.ec2_nat_instance.0.network_interface_id : null
   nat_gateway_id         = var.nat_type == "gateway" ? element(aws_nat_gateway.ngw.*.id, count.index) : null

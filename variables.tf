@@ -25,6 +25,54 @@ variable "flow_log_retention_in_days" {
   default     = 0
 }
 
+variable "gateway_endpoints" {
+  description = "Gateway VPC endpoint service short names, expanded to `com.amazonaws.<region>.<name>` e.g. `[\"s3\", \"dynamodb\"]`. Attached to the private route tables, so `create_private_subnets` or `nat_type` must also be set for these to route anything"
+  type        = list(string)
+  default     = []
+}
+
+variable "gateway_endpoint_policies" {
+  description = "Endpoint policy JSON per gateway endpoint, keyed by the same service name given in `gateway_endpoints` e.g. `{ s3 = data.aws_iam_policy_document.s3_endpoint.json }`. Services left out get AWS's default full access policy"
+  type        = map(string)
+  default     = {}
+}
+
+variable "interface_endpoints" {
+  description = "Interface VPC endpoint service short names, expanded to `com.amazonaws.<region>.<name>` e.g. `[\"ecr.api\", \"ecr.dkr\", \"logs\", \"ssm\"]`. An ENI is created in each private subnet, so `create_private_subnets` must be true"
+  type        = list(string)
+  default     = []
+}
+
+variable "interface_endpoint_policies" {
+  description = "Endpoint policy JSON per interface endpoint, keyed by the same service name given in `interface_endpoints`. Services left out get AWS's default full access policy"
+  type        = map(string)
+  default     = {}
+}
+
+variable "interface_endpoint_private_dns_enabled" {
+  description = "Associate a private hosted zone with the VPC so the service's normal DNS name resolves to the interface endpoint, letting unmodified clients use it. Without this an endpoint is created but nothing routes to it. Set to false for the few services that do not support private DNS"
+  type        = bool
+  default     = true
+}
+
+variable "interface_endpoint_security_group_ids" {
+  description = "Existing security group ids to attach to the interface endpoints. When empty, a security group is created for them"
+  type        = list(string)
+  default     = []
+}
+
+variable "interface_endpoint_sg_ingress" {
+  description = "Ingress for the created interface endpoint Security Group. Defaults to tcp/443 from the VPC CIDR"
+  type        = list(any)
+  default     = []
+}
+
+variable "interface_endpoint_sg_egress" {
+  description = "Egress for the created interface endpoint Security Group. Defaults to all traffic to 0.0.0.0/0"
+  type        = list(any)
+  default     = []
+}
+
 variable "name" {
   description = "VPC name"
   type        = string
