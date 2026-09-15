@@ -19,11 +19,6 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-locals {
-  # private subnet IPv6 is optional: only enabled when the user explicitly requests it
-  private_subnet_ipv6_enabled = var.enable_private_subnet_ipv6
-}
-
 resource "aws_subnet" "public_subnet" {
   count                           = var.number_of_aws_az_use
   vpc_id                          = aws_vpc.vpc.id
@@ -41,8 +36,8 @@ resource "aws_subnet" "private_subnet" {
   count                           = var.create_private_subnets ? var.number_of_aws_az_use : 0
   vpc_id                          = aws_vpc.vpc.id
   cidr_block                      = cidrsubnet(var.cidr_block, var.subnet_mask_bits, count.index + 100)
-  ipv6_cidr_block                 = local.private_subnet_ipv6_enabled ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, count.index + 100) : null
-  assign_ipv6_address_on_creation = local.private_subnet_ipv6_enabled
+  ipv6_cidr_block                 = var.enable_private_subnet_ipv6 ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, count.index + 100) : null
+  assign_ipv6_address_on_creation = var.enable_private_subnet_ipv6
   availability_zone               = element(data.aws_availability_zones.available.names, count.index)
   map_public_ip_on_launch         = false
   tags = {
@@ -52,7 +47,7 @@ resource "aws_subnet" "private_subnet" {
 
 # Egress Only Internet Gateway used for private subnets to access the internet via IPv6
 resource "aws_egress_only_internet_gateway" "eigw" {
-  count  = var.create_private_subnets && local.private_subnet_ipv6_enabled ? 1 : 0
+  count  = var.create_private_subnets && var.enable_private_subnet_ipv6 ? 1 : 0
   vpc_id = aws_vpc.vpc.id
   tags = {
     Name = "${var.name}-eigw"
@@ -124,7 +119,7 @@ resource "aws_route" "ngw_route" {
 }
 
 resource "aws_route" "eigw_route_ipv6" {
-  count                       = var.create_private_subnets && local.private_subnet_ipv6_enabled ? var.number_of_aws_az_use : 0
+  count                       = var.create_private_subnets && var.enable_private_subnet_ipv6 ? var.number_of_aws_az_use : 0
   destination_ipv6_cidr_block = "::/0"
   egress_only_gateway_id      = aws_egress_only_internet_gateway.eigw[0].id
   route_table_id              = element(aws_route_table.private_route_table.*.id, count.index)
