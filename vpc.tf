@@ -40,23 +40,37 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
+locals {
+  nat_gateway_azs = var.nat_type == "gateway" ? slice(data.aws_availability_zones.available.names, 0, var.number_of_nat_gw) : []
+}
+
 resource "aws_eip" "ngw_eip" {
-  count  = var.nat_type == "gateway" ? var.number_of_nat_gw : 0
-  domain = "vpc"
+  for_each = toset(local.nat_gateway_azs)
+  domain   = "vpc"
   tags = {
-    Name = "${var.name}-ngw-eip-${element(data.aws_availability_zones.available.names, count.index)}"
+    Name = "${var.name}-ngw-eip-${each.key}"
   }
 }
 
+# Regional NAT gateway in manual mode
 resource "aws_nat_gateway" "ngw" {
-  count         = var.nat_type == "gateway" ? var.number_of_nat_gw : 0
-  allocation_id = element(aws_eip.ngw_eip.*.id, count.index)
-  subnet_id     = element(aws_subnet.public_subnet.*.id, count.index)
+  count             = var.nat_type == "gateway" ? 1 : 0
+  vpc_id            = aws_vpc.vpc.id
+  availability_mode = "regional"
+
+  dynamic "availability_zone_address" {
+    for_each = aws_eip.ngw_eip
+    content {
+      availability_zone = availability_zone_address.key
+      allocation_ids    = [availability_zone_address.value.id]
+    }
+  }
+
   tags = {
-    Name = "${var.name}-ngw-${element(data.aws_availability_zones.available.names, count.index)}"
+    Name = "${var.name}-ngw"
   }
   depends_on = [
-    aws_route_table_association.public_route_table_assoc
+    aws_internet_gateway.igw
   ]
 }
 
@@ -94,7 +108,7 @@ resource "aws_route" "ngw_route" {
   count                  = length(var.nat_type) > 0 ? var.number_of_aws_az_use : 0
   destination_cidr_block = "0.0.0.0/0"
   network_interface_id   = var.nat_type == "instance" ? module.ec2_nat_instance.0.network_interface_id : null
-  nat_gateway_id         = var.nat_type == "gateway" ? element(aws_nat_gateway.ngw.*.id, count.index) : null
+  nat_gateway_id         = var.nat_type == "gateway" ? aws_nat_gateway.ngw[0].id : null
   route_table_id         = element(aws_route_table.private_route_table.*.id, count.index)
 }
 
