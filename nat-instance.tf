@@ -28,6 +28,7 @@ module "ec2_nat_instance" {
   subnet                  = element(aws_subnet.public_subnet.*.id, 1)
   vpc_id                  = aws_vpc.vpc.id
   eip                     = true
+  enable_ipv6             = false
   source_dest_check       = false
   key_name                = var.nat_instance_key_name
   disable_api_termination = false
