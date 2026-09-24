@@ -43,7 +43,12 @@ output "nat_instance_ip" {
 }
 
 output "nat_gateway_id" {
-  value = var.nat_type == "gateway" ? aws_nat_gateway.ngw.*.id : null
+  value = one(aws_nat_gateway.ngw.*.id)
+}
+
+output "nat_gateway_public_ips" {
+  description = "Map of AZ to the NAT gateway's public egress IP in that AZ, for allowlisting"
+  value       = { for az, eip in aws_eip.ngw_eip : az => eip.public_ip }
 }
 
 output "public_route_table_ids" {
@@ -80,6 +85,18 @@ output "private_subnets_availability_zone" {
 
 output "private_subnets_cidr" {
   value = var.create_private_subnets ? aws_subnet.private_subnet.*.cidr_block : null
+}
+
+output "gateway_endpoint_ids" {
+  value = { for service, endpoint in aws_vpc_endpoint.gateway : service => endpoint.id }
+}
+
+output "interface_endpoint_ids" {
+  value = { for service, endpoint in aws_vpc_endpoint.interface : service => endpoint.id }
+}
+
+output "interface_endpoint_security_group_id" {
+  value = one(module.interface_endpoint_sg.*.id)
 }
 
 output "private_subnet_ipv6_cidr_blocks" {
