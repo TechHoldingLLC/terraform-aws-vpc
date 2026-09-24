@@ -3,13 +3,12 @@
 #####################
 
 terraform {
-  # Needed for lifecycle condition defined in vpc_endpoints.tf
-  required_version = ">= 1.2"
+  required_version = ">= 1.9"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.5"
+      version = ">= 6.24.0"
     }
   }
 }

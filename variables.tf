@@ -85,9 +85,14 @@ variable "number_of_aws_az_use" {
 }
 
 variable "number_of_nat_gw" {
-  description = "Number of nat gateway for private subnets"
+  description = "Number of AZs the regional NAT gateway serves, taken in order from the AZs in use (one EIP each). Must not exceed `number_of_aws_az_use`"
   type        = number
   default     = 1
+
+  validation {
+    condition     = var.number_of_nat_gw >= 1 && var.number_of_nat_gw <= var.number_of_aws_az_use
+    error_message = "number_of_nat_gw must be between 1 and number_of_aws_az_use."
+  }
 }
 
 variable "nat_instance_type" {

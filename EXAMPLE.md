@@ -51,20 +51,32 @@ module "vpc" {
 
 
 ## Create a VPC with Private Subnet and NAT Gateway
+`nat_type = "gateway"` creates a single regional NAT gateway in manual mode.
+
+By default it serves only the first AZ, which works like a single zonal NAT gateway:
 ```
 module "vpc" {
   source = "./vpc"
   name = "test-vpc"
   cidr_block = "10.0.0.0/16"
+  number_of_aws_az_use = 3
 
   create_private_subnets = true
-  nat_type = "gateway"
+  nat_type = "gateway"      # NAT in the 1st AZ only
 
   providers = {
     aws = aws
   }
 }
 ```
+
+Serve the first N AZs in use (`number_of_nat_gw` must not exceed `number_of_aws_az_use`):
+```
+  number_of_aws_az_use = 4
+  nat_type             = "gateway"
+  number_of_nat_gw     = 2  # NAT in the 1st and 2nd AZ
+```
+
 
 ## Create a VPC with Flow logs
 ```

@@ -2,14 +2,14 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.5 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.24.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.5 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.24.0 |
 
 ## Modules
 
@@ -70,9 +70,9 @@
 | <a name="input_nat_instance_sg_egress"></a> [nat\_instance\_sg\_egress](#input\_nat\_instance\_sg\_egress) | Egress for Nat instance Security Group | `list(any)` | `[]` | no |
 | <a name="input_nat_instance_sg_ingress"></a> [nat\_instance\_sg\_ingress](#input\_nat\_instance\_sg\_ingress) | Ingress for Nat instance Security Group | `list(any)` | `[]` | no |
 | <a name="input_nat_instance_type"></a> [nat\_instance\_type](#input\_nat\_instance\_type) | NAT instance type | `string` | `"t3.nano"` | no |
-| <a name="input_nat_type"></a> [nat\_type](#input\_nat\_type) | NAT type i.e `instance` or `gateway` | `string` | `""` | no |
+| <a name="input_nat_type"></a> [nat\_type](#input\_nat\_type) | NAT type i.e `instance` or `gateway`. `gateway` creates one regional NAT gateway in manual mode; see `number_of_nat_gw` | `string` | `""` | no |
 | <a name="input_number_of_aws_az_use"></a> [number\_of\_aws\_az\_use](#input\_number\_of\_aws\_az\_use) | How many aws avaibility zones use for deployment | `number` | `2` | no |
-| <a name="input_number_of_nat_gw"></a> [number\_of\_nat\_gw](#input\_number\_of\_nat\_gw) | Number of nat gateway for private subnets | `number` | `1` | no |
+| <a name="input_number_of_nat_gw"></a> [number\_of\_nat\_gw](#input\_number\_of\_nat\_gw) | Number of AZs the regional NAT gateway serves, taken in order from the AZs in use (one EIP each). Must not exceed `number_of_aws_az_use` | `number` | `1` | no |
 | <a name="input_subnet_mask_bits"></a> [subnet\_mask\_bits](#input\_subnet\_mask\_bits) | Number of bits to use in CIDR subnet mask | `number` | `8` | no |
 
 ## Outputs
@@ -90,6 +90,7 @@
 | <a name="output_interface_endpoint_security_group_id"></a> [interface\_endpoint\_security\_group\_id](#output\_interface\_endpoint\_security\_group\_id) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_nat_gateway_id"></a> [nat\_gateway\_id](#output\_nat\_gateway\_id) | n/a |
+| <a name="output_nat_gateway_public_ips"></a> [nat\_gateway\_public\_ips](#output\_nat\_gateway\_public\_ips) | Map of AZ to the NAT gateway's public egress IP in that AZ, for allowlisting |
 | <a name="output_nat_instance_ip"></a> [nat\_instance\_ip](#output\_nat\_instance\_ip) | n/a |
 | <a name="output_nat_instance_security_group_ids"></a> [nat\_instance\_security\_group\_ids](#output\_nat\_instance\_security\_group\_ids) | n/a |
 | <a name="output_private_route_table_ids"></a> [private\_route\_table\_ids](#output\_private\_route\_table\_ids) | n/a |
